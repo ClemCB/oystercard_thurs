@@ -28,17 +28,6 @@ describe Oystercard do
 
   end
 
-  describe ".deduct" do
-
-    it { is_expected.to respond_to(:deduct).with(1).argument }
-
-    it "should deduct the balance" do
-      oystercard.top_up(50)
-      expect{ oystercard.deduct(3)}.to change { oystercard.balance }.by (-3)
-    end
-
-  end
-
   describe ".in_journey?" do
 
     it "should return the status of trip in_journey" do
@@ -67,6 +56,10 @@ describe Oystercard do
       it "should change the status of trip to not in journey" do
         oystercard.touch_out
         expect(oystercard).to_not be_in_journey
+      end
+
+      it "should deduct the fee" do
+        expect{oystercard.touch_out}.to change {oystercard.balance}.by (-3)
       end
 
     end
