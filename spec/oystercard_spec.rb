@@ -59,7 +59,7 @@ describe Oystercard do
       end
 
       it "should deduct the fee" do
-        expect{oystercard.touch_out}.to change {oystercard.balance}.by (-3)
+        expect{oystercard.touch_out}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
       end
 
     end
@@ -68,8 +68,8 @@ describe Oystercard do
 
   context "balance too low" do
 
-    it "should raise an error if balance is less than £#{Oystercard::MIN_BALANCE}" do
-      expect{oystercard.touch_in}.to raise_error "Your balance is less than #{Oystercard::MIN_BALANCE}!"
+    it "should raise an error if balance is less than £#{Oystercard::MIN_FARE}" do
+      expect{oystercard.touch_in}.to raise_error "Your balance is less than #{Oystercard::MIN_FARE}!"
     end
 
   end
