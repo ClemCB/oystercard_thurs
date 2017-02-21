@@ -3,8 +3,9 @@ require 'oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
-  # let(:oystercard) { double :oystercard }
-  let(:station) { double :station }
+
+  let(:entry_station) { double :entry_station }
+  let(:exit_station) { double :exit_station }
 
   it "should has a balance of 0" do
     expect(oystercard.balance).to eq 0
@@ -42,7 +43,7 @@ describe Oystercard do
 
     before :each do
       oystercard.top_up(10)
-      oystercard.touch_in(station)
+      oystercard.touch_in(entry_station)
     end
 
     describe ".touch_in" do
@@ -51,25 +52,32 @@ describe Oystercard do
         expect(oystercard.in_journey?).to eq true
       end
 
-      it "should remember entry station" do
-        expect(oystercard.station).to eq station
-      end
     end
 
     describe ".touch_out" do
 
       it "should change the status of trip to not in journey" do
-        oystercard.touch_out
+        oystercard.touch_out(exit_station)
         expect(oystercard).to_not be_in_journey
       end
 
       it "should deduct the fee" do
-        expect{oystercard.touch_out}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
+        expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
       end
 
+      #
+      # it "should remember entry station and store it" do
+      #   expect(oystercard.journeys).to include(oystercard.entry_station)
+      # end
+
       it "should forget entry station" do
-        oystercard.touch_out
-        expect(oystercard.station).to eq nil
+        oystercard.touch_out(exit_station)
+        expect(oystercard.entry_station).to eq nil
+      end
+
+      it "should remember the exit station" do
+        oystercard.touch_out(exit_station)
+        expect(oystercard.exit_station).to eq exit_station
       end
 
     end
@@ -79,7 +87,7 @@ describe Oystercard do
   context "balance too low" do
 
     it "should raise an error if balance is less than £#{Oystercard::MIN_FARE}" do
-      expect{oystercard.touch_in(station)}.to raise_error "Your balance is less than #{Oystercard::MIN_FARE}!"
+      expect{oystercard.touch_in(entry_station)}.to raise_error "Your balance is less than #{Oystercard::MIN_FARE}!"
     end
 
   end
