@@ -50,6 +50,7 @@ describe Oystercard do
   describe "touching in and out" do
 
     before :each do
+      oystercard.top_up(10)
       oystercard.touch_in
     end
 
@@ -68,6 +69,14 @@ describe Oystercard do
         expect(oystercard).to_not be_in_journey
       end
 
+    end
+
+  end
+
+  context "balance too low" do
+
+    it "should raise an error if balance is less than £#{Oystercard::MIN_BALANCE}" do
+      expect{oystercard.touch_in}.to raise_error "Your balance is less than #{Oystercard::MIN_BALANCE}!"
     end
 
   end
