@@ -17,6 +17,7 @@ describe "initialization" do
     expect(oystercard.journeys). to eq []
   end
 end
+
   describe '.top_up' do
 
     it {is_expected.to respond_to(:top_up).with(1).argument}
@@ -37,14 +38,6 @@ end
 
   end
 
-  describe ".in_journey?" do
-
-    it "should return the status of trip in_journey" do
-      expect(oystercard.in_journey?).to eq false
-    end
-
-  end
-
   describe "touching in and out" do
 
     before :each do
@@ -53,21 +46,16 @@ end
     end
 
     describe ".touch_in" do
-
-      it "should change the status of trip to in journey" do
-        expect(oystercard.in_journey?).to eq true
-      end
-
+      # tests for touch in have moved to journey_spec, introduce new test here:
+      # it 'saves the station that the card touch in at' do
+      #   expect(oystercard.entry_station).to eq entry_station
+      # end
     end
 
 
     describe ".touch_out" do
       before :each do
           oystercard.touch_out(exit_station)
-      end
-
-      it "should change the status of trip to not in journey" do
-        expect(oystercard).to_not be_in_journey
       end
 
       it "should deduct the fee" do

@@ -1,3 +1,6 @@
+require_relative 'station'
+require_relative 'journey'
+
 class Oystercard
 
   MAX_BALANCE = 90
@@ -15,10 +18,6 @@ class Oystercard
   def top_up(amount)
     raise "You can't have a balance more than #{MAX_BALANCE}!" if balance + amount > MAX_BALANCE
     @balance += amount
-  end
-
-  def in_journey?
-    @entry_station != nil
   end
 
   def touch_in(station)
