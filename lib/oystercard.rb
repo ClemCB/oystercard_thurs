@@ -23,6 +23,7 @@ class Oystercard
 
   def touch_in(station)
     raise "Your balance is less than #{MIN_FARE}!" if @balance < MIN_FARE
+    @exit_station = nil
     @entry_station = station
   end
 
@@ -31,6 +32,7 @@ class Oystercard
     @exit_station = station
     journey_history
     @entry_station = nil
+    @exit_station
   end
 
   def journey_history

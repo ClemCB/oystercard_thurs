@@ -6,6 +6,7 @@ describe Oystercard do
 
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station }
+  let(:journey) {{ "entry" => entry_station, "exit" => exit_station}}
 
 describe "initialization" do
   it "should has a balance of 0" do
@@ -73,13 +74,8 @@ end
         expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
       end
 
-
-      it "should remember the exit station" do
-        expect(oystercard.exit_station).to eq exit_station
-      end
-
       it "should store journey details (entry and exit stations)" do
-        expect(oystercard.journeys).to eq [{ "entry" => entry_station, "exit" => exit_station}]
+        expect(oystercard.journeys).to include journey
       end
 
       it "should forget entry station after touching out" do
