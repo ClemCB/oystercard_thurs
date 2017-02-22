@@ -9,7 +9,7 @@ class Oystercard
     @balance = 0
     @entry_station = nil
     @exit_station = nil
-    @journeys = {}
+    @journeys = []
   end
 
   def top_up(amount)
@@ -24,14 +24,18 @@ class Oystercard
   def touch_in(station)
     raise "Your balance is less than #{MIN_FARE}!" if @balance < MIN_FARE
     @entry_station = station
-    # @journeys[:entry_station] = station
-    # p @journeys
   end
 
   def touch_out(station)
     deduct(MIN_FARE)
-    @entry_station = nil
     @exit_station = station
+    journey_history
+    @entry_station = nil
+  end
+
+  def journey_history
+    journey = { "entry" => @entry_station, "exit" => @exit_station}
+    @journeys << journey
   end
 
   private

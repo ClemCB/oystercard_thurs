@@ -7,10 +7,15 @@ describe Oystercard do
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station }
 
+describe "initialization" do
   it "should has a balance of 0" do
     expect(oystercard.balance).to eq 0
   end
 
+  it "should have an empty list of journeys by default" do
+    expect(oystercard.journeys). to eq []
+  end
+end
   describe '.top_up' do
 
     it {is_expected.to respond_to(:top_up).with(1).argument}
@@ -54,10 +59,13 @@ describe Oystercard do
 
     end
 
+
     describe ".touch_out" do
+      before :each do
+          oystercard.touch_out(exit_station)
+      end
 
       it "should change the status of trip to not in journey" do
-        oystercard.touch_out(exit_station)
         expect(oystercard).to_not be_in_journey
       end
 
@@ -65,21 +73,18 @@ describe Oystercard do
         expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
       end
 
-      #
-      # it "should remember entry station and store it" do
-      #   expect(oystercard.journeys).to include(oystercard.entry_station)
-      # end
-
-      it "should forget entry station" do
-        oystercard.touch_out(exit_station)
-        expect(oystercard.entry_station).to eq nil
-      end
 
       it "should remember the exit station" do
-        oystercard.touch_out(exit_station)
         expect(oystercard.exit_station).to eq exit_station
       end
 
+      it "should store journey details (entry and exit stations)" do
+        expect(oystercard.journeys).to eq [{ "entry" => entry_station, "exit" => exit_station}]
+      end
+
+      it "should forget entry station after touching out" do
+        expect(oystercard.entry_station).to eq nil
+      end
     end
 
   end
