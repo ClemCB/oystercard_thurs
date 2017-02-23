@@ -12,14 +12,14 @@ describe Journey do
       expect(journey.journeys). to eq []
     end
 
-  context 'touch in and out methods on journey' do
+    it 'starts a journey', :focus => true do
+     expect(journey.start_journey(Station.new "Aldgate")).to eq journey.entry_station
+    end
+
+    context 'touch in and out methods on journey' do
 
     before (:each) do
       journey.start_journey(Station.new "Aldgate")
-    end
-
-    it 'starts a journey', :focus => true do
-     expect(journey.start_journey(Station.new "Aldgate")).to eq journey.entry_station
     end
 
   it 'ends a journey' do
@@ -35,6 +35,21 @@ describe Journey do
     journey.end_journey(Station.new "Nottinghill gate")
     expect(journey.entry_station).to eq nil
   end
+
 end
 
+  context 'raising a penalty fare' do
+
+  it 'charges penalty fare if not tapped in' do
+    journey.end_journey(Station.new "Aldgate")
+    expect(journey.fare_checker).to eq journey.penalty_fare #will want this to call in oystercard
+  end
+
+  it 'charges penalty fare if tapped in twice' do
+    journey.start_journey(Station.new "Aldgate")
+    expect(journey.start_journey(Station.new "Aldgate")).to eq journey.penalty_fare
+  end
+
+  it 'checks to see if regular fare '
+end
 end

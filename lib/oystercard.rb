@@ -5,6 +5,7 @@ class Oystercard
 
   MAX_BALANCE = 90
   MIN_FARE = 1
+  PENALTY_FARE = 6
 
   attr_reader :balance, :journey_one
 
