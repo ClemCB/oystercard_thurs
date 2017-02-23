@@ -13,14 +13,6 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey
     @entry_station = station.name
   end
 
-  # def touch_out(station)
-  #   deduct(MIN_FARE)
-  #   @exit_station = station
-  #   journey_history
-  #   @entry_station = nil
-  #   @exit_station
-  # end
-
   def end_journey(station)
     @exit_station = station.name
     save_journey
@@ -34,8 +26,7 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey
   end
 
   def complete?
-    @entry_station != nil
-    # @exit_station != nil
+    @entry_station == nil && @exit_station == nil
   end
 
 end

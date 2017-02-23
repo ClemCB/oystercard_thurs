@@ -6,18 +6,15 @@ class Oystercard
   MAX_BALANCE = 90
   MIN_FARE = 1
 
-  attr_reader :balance, :entry_station, :exit_station, :journeys, :journey_one
+  attr_reader :balance, :journey_one
 
   def initialize
     @balance = 0
-    @entry_station = nil
-    @exit_station = nil
-    @journeys = []
     @journey_one = Journey.new
   end
 
   def top_up(amount)
-    raise "You can't have a balance more than #{MAX_BALANCE}!" if balance + amount > MAX_BALANCE
+    raise "You can't have a balance more than #{MAX_BALANCE}!" if balance_over_maximum?(amount)
     @balance += amount
   end
 
@@ -36,6 +33,10 @@ class Oystercard
   def deduct(fee)
     #journey.farecheck
     @balance -= fee
+  end
+
+  def balance_over_maximum?(amount)
+    @balance + amount > MAX_BALANCE
   end
 
 end
