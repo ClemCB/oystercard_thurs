@@ -24,6 +24,7 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey
   def end_journey(station)
     @exit_station = station.name
     save_journey
+    @entry_station = nil
     @exit_station
   end
 
