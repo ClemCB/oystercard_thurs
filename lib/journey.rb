@@ -1,9 +1,11 @@
 class Journey
 
-attr_reader :entry_station
+attr_reader :entry_station, :exit_station, :journeys, :current_journey
 
   def initialize
-    @oystercard = Oystercard.new
+    @entry_station = nil
+    @exit_station = nil
+    @journeys = []
   end
 
 
@@ -11,17 +13,28 @@ attr_reader :entry_station
     @entry_station = station.name
   end
 
+  # def touch_out(station)
+  #   deduct(MIN_FARE)
+  #   @exit_station = station
+  #   journey_history
+  #   @entry_station = nil
+  #   @exit_station
+  # end
+
+  def end_journey(station)
+    @exit_station = station.name
+    save_journey
+    @exit_station
+  end
+
+  def save_journey
+    @current_journey = { "entry" => @entry_station, "exit" => @exit_station}
+    @journeys << @current_journey
+  end
 
   def complete?
     @entry_station != nil
     # @exit_station != nil
   end
-
-  # extracted from oystercard.rb, refactor to be applied to Journey
-  # def journey_history
-  #   journey = { "entry" => @entry_station, "exit" => @exit_station}
-  #   @journeys << journey
-  # end
-
 
 end
