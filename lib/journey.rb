@@ -1,6 +1,8 @@
 class Journey
 
-attr_reader :entry_station, :exit_station, :journeys, :current_journey, :in_journey
+    PENALTY_FARE = 6
+
+attr_reader :entry_station, :exit_station, :journeys, :current_journey, :in_journey, :fare
 
   def initialize
     @entry_station = nil
@@ -12,23 +14,23 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey, :in_jour
 
   def start_journey(station)
     if in_journey?
-      Oystercard::PENALTY_FARE
+      PENALTY_FARE
     else
       @in_journey = true
       @entry_station = station.name
     end
-    # @in_journey = true
-    # @entry_station != nil ? Oystercard::PENALTY_FARE : @entry_station = station.name
   end
 
   def end_journey(station)
-      @exit_station = station.name
+    @exit_station = station.name
     if @entry_station != nil
         save_journey
-        @entry_station = nil
         @in_journey = false
+        @fare = fare_checker
+        @entry_station = nil
+
     else
-      Oystercard::PENALTY_FARE
+      @fare = PENALTY_FARE
     end
   end
 
@@ -42,7 +44,7 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey, :in_jour
   end
 
   def fare_checker
-      in_journey? ? Oystercard::PENALTY_FARE : Oystercard::MIN_FARE
+      in_journey? ? PENALTY_FARE : Oystercard::MIN_FARE
   end
 
 end

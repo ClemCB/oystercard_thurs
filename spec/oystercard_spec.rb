@@ -4,52 +4,62 @@ describe Oystercard do
 
   subject(:oystercard) { described_class.new }
 
-  let(:entry_station) { double :station }
-  let(:exit_station) { double :station }
+  let(:entry_station) { double :station, :name => "Aldgate" }
+  let(:exit_station) { double :station, :name => "Nottinghil gate" }
   let(:journey) { { "entry" => entry_station, "exit" => exit_station} }
 
-  describe "initialization" do
+  describe "Initialization" do
     it "should has a balance of 0" do
       expect(oystercard.balance).to eq 0
     end
+end
+
+
+  it 'should charge a penalty fare if there is no entry station' do
+    oystercard.touch_out(exit_station)
+    expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Journey::PENALTY_FARE
   end
 
-  describe '#top_up' do
+  describe 'Top Up' do
 
-    it {is_expected.to respond_to(:top_up).with(1).argument}
-
-    it "can top_up the balance" do
+    it "can top up the balance" do
       expect{ oystercard.top_up(10)}.to change { oystercard.balance }.by 10
     end
 
-    it "should raise an error if balance is greater than 90" do
-      expect{oystercard.top_up(100)}.to raise_error "You can't have a balance more than 90!"
-    end
-
     it "should raise an error if balance is exceeded" do
-      oystercard.top_up(Oystercard::MAX_BALANCE)
-      expect{oystercard.top_up(1)}.to raise_error "You can't have a balance more than 90!"
+      error_message = "You can't have a balance more than #{Oystercard::MAX_BALANCE}!"
+      expect{oystercard.top_up(Oystercard::MAX_BALANCE + 1)}.to raise_error error_message
     end
   end
 
-  describe "touching in and out" do
+  describe 'Journey' do
 
-    before :each do
+  context '#touch-in with no funds' do
+
+    it "should raise an error for insufficient funds" do
+      expect{oystercard.touch_in(entry_station)}.to raise_error "Your balance is less than #{Oystercard::MIN_FARE}!"
+    end
+
+  end
+
+  context '#touch-in' do
+
+    it 'should charge penalty fare if touched-in twice' do
       oystercard.top_up(10)
-      oystercard.touch_in(Station.new 'Nottinghill')
-    end
-
-  describe "#touch_out" do
-
-    it "should deduct the fee" do
-      expect{oystercard.touch_out(Station.new ('Aldgate'))}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
+      oystercard.touch_in(entry_station)
+      expect{oystercard.touch_in(entry_station)}.to change {oystercard.balance}.by -Journey::PENALTY_FARE
     end
   end
 
-  end
+  context "#touch_out" do
 
-  it "should raise an error if balance is less than £#{Oystercard::MIN_FARE}" do
-    expect{oystercard.touch_in(entry_station)}.to raise_error "Your balance is less than #{Oystercard::MIN_FARE}!"
-  end
+    it "should charge a fee when full journey is complete" do
+      oystercard.top_up(10)
+      oystercard.touch_in(entry_station)
+      expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MIN_FARE
+    end
 
+
+  end
+  end
 end

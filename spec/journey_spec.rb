@@ -50,12 +50,13 @@ end
   context 'raising a penalty fare' do
 
   it 'charges penalty fare if not tapped in' do
-    expect(journey.end_journey(exit_station)).to eq Oystercard::PENALTY_FARE #will want this to call in oystercard
+    journey.end_journey(exit_station)
+    expect(journey.fare).to eq Journey::PENALTY_FARE #will want this to call in oystercard
   end
 
   it 'charges penalty fare if tapped in twice' do
     journey.start_journey(entry_station)
-    expect(journey.start_journey(entry_station)).to eq Oystercard::PENALTY_FARE
+    expect(journey.start_journey(entry_station)).to eq Journey::PENALTY_FARE
   end
 
   it { is_expected.to respond_to(:fare_checker) }
