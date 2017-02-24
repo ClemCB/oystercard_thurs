@@ -1,27 +1,35 @@
 class Journey
 
-attr_reader :entry_station, :exit_station, :journeys, :current_journey
+attr_reader :entry_station, :exit_station, :journeys, :current_journey, :in_journey
 
   def initialize
     @entry_station = nil
     @exit_station = nil
     @journeys = []
+    @in_journey = false
   end
 
 
   def start_journey(station)
-    if @entry_station != nil
-      return penalty_fare
+    if in_journey?
+      Oystercard::PENALTY_FARE
+    else
+      @in_journey = true
+      @entry_station = station.name
     end
-    @entry_station = station.name
+    # @in_journey = true
+    # @entry_station != nil ? Oystercard::PENALTY_FARE : @entry_station = station.name
   end
 
   def end_journey(station)
-    @exit_station = station.name
-    #fare check
-    save_journey
-    @entry_station = nil
-    @exit_station
+      @exit_station = station.name
+    if @entry_station != nil
+        save_journey
+        @entry_station = nil
+        @in_journey = false
+    else
+      Oystercard::PENALTY_FARE
+    end
   end
 
   def save_journey
@@ -29,19 +37,12 @@ attr_reader :entry_station, :exit_station, :journeys, :current_journey
     @journeys << @current_journey
   end
 
-  def complete?
-    @entry_station == nil && @exit_station == nil
+  def in_journey?
+    @in_journey
   end
 
   def fare_checker
-  #     if @entry_station == nil || @exit_station == nil
-  #       penality_fare
-  #     else
-    penalty_fare #will want this to call in oystercard
-  end
-
-  def penalty_fare
-    Oystercard::PENALTY_FARE
+      in_journey? ? Oystercard::PENALTY_FARE : Oystercard::MIN_FARE
   end
 
 end
